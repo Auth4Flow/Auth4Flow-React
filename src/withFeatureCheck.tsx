@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { FeatureCheck } from "@warrantdev/warrant-js";
-import useWarrant from "./useWarrant";
+import { FeatureCheck } from "@auth4flow/auth4flow-js";
+import useAuth4Flow from "./useAuth4Flow";
 
 export interface WithFeatureCheckOptions extends FeatureCheck {
-    redirectTo: string;
+  redirectTo: string;
 }
 
 /**
@@ -13,34 +13,40 @@ export interface WithFeatureCheckOptions extends FeatureCheck {
  * @param options The options containing the featureId to check for and a redirectTo path for unauthorized access.
  * @returns
  */
-const withFeatureCheck = (WrappedComponent: React.ComponentClass, options: WithFeatureCheckOptions) => {
-    return (props: any) => {
-        const { featureId, consistentRead, debug, redirectTo } = options;
-        const { sessionToken, hasFeature } = useWarrant();
-        const [showWrappedComponent, setShowWrappedComponent] = useState<boolean>(false);
+const withFeatureCheck = (
+  WrappedComponent: React.ComponentClass,
+  options: WithFeatureCheckOptions
+) => {
+  return (props: any) => {
+    const { featureId, consistentRead, debug, redirectTo } = options;
+    const { sessionToken, hasFeature } = useAuth4Flow();
+    const [showWrappedComponent, setShowWrappedComponent] =
+      useState<boolean>(false);
 
-        useEffect(() => {
-            const checkWarrant = async () => {
-                setShowWrappedComponent(await hasFeature({ featureId, consistentRead, debug }));
-            };
+    useEffect(() => {
+      const checkWarrant = async () => {
+        setShowWrappedComponent(
+          await hasFeature({ featureId, consistentRead, debug })
+        );
+      };
 
-            if (sessionToken) {
-                checkWarrant();
-            }
-        }, [sessionToken]);
+      if (sessionToken) {
+        checkWarrant();
+      }
+    }, [sessionToken]);
 
-        if (!sessionToken) {
-            return <></>;
-        }
-
-        if (showWrappedComponent) {
-            return <WrappedComponent {...props}/>;
-        }
-
-        window.history.replaceState({}, document.title, redirectTo);
-
-        return null;
+    if (!sessionToken) {
+      return <></>;
     }
-}
+
+    if (showWrappedComponent) {
+      return <WrappedComponent {...props} />;
+    }
+
+    window.history.replaceState({}, document.title, redirectTo);
+
+    return null;
+  };
+};
 
 export default withFeatureCheck;

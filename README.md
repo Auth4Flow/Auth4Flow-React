@@ -23,20 +23,20 @@ npm install @warrantdev/react-warrant-js
 
 ## Usage
 
-### `WarrantProvider`
+### `Auth4FlowProvider`
 
-Wrap your application with `WarrantProvider`, passing it your Client Key using the `clientKey` prop. `WarrantProvider` uses [React Context](https://reactjs.org/docs/context.html) to allow you to access utility methods for performing access checks anywhere in your app.
+Wrap your application with `Auth4FlowProvider`, passing it your Client Key using the `clientKey` prop. `Auth4FlowProvider` uses [React Context](https://reactjs.org/docs/context.html) to allow you to access utility methods for performing access checks anywhere in your app.
 
 ```jsx
 // App.jsx
 import React from "react";
-import { WarrantProvider } from "@warrantdev/react-warrant-js";
+import { Auth4FlowProvider } from "@warrantdev/react-warrant-js";
 
 const App = () => {
   return (
-    <WarrantProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+    <Auth4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
       {/* Routes, ThemeProviders, etc. */}
-    </WarrantProvider>
+    </Auth4FlowProvider>
   );
 };
 
@@ -47,15 +47,15 @@ export default App;
 
 In order to finish initializing the library and begin performing access checks in your app, you must provide a server-generated session token and set it using the `setSessionToken` method. Otherwise your requests will be denied by the Warrant API.
 
-Set the session token using the `useWarrant` hook:
+Set the session token using the `useAuth4Flow` hook:
 
 ```jsx
 // Login.jsx
 import React from "react";
-import { useWarrant } from "@warrantdev/react-warrant-js";
+import { useAuth4Flow } from "@warrantdev/react-warrant-js";
 
 const Login = () => {
-  const { setSessionToken } = useWarrant();
+  const { setSessionToken } = useAuth4Flow();
 
   const loginUser = async (event) => {
     const response = await login(email, password);
@@ -84,7 +84,7 @@ Or using `Context.Consumer`:
 
 ```jsx
 import React from "react";
-import { WarrantContext } from "@warrantdev/react-warrant-js";
+import { Auth4FlowContext } from "@warrantdev/react-warrant-js";
 
 const Login = () => {
   const loginUser = (setSessionToken) => {
@@ -105,13 +105,13 @@ const Login = () => {
   };
 
   return (
-    <WarrantContext.Consumer>
+    <Auth4FlowContext.Consumer>
       {({ setSessionToken }) => (
         <form onSubmit={loginUser(setSessionToken)}>
           {/* email & password inputs, etc. */}
         </form>
       )}
-    </WarrantContext.Consumer>
+    </Auth4FlowContext.Consumer>
   );
 };
 
@@ -122,14 +122,14 @@ export default Login;
 
 `check` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the specified `relation` on the specified `object` and returns `false` otherwise. Use it for fine-grained conditional rendering or for specific logic within components.
 
-Using `check` through the `useWarrant` hook:
+Using `check` through the `useAuth4Flow` hook:
 
 ```jsx
 import React, { useEffect } from "react";
-import { useWarrant } from "@warrantdev/react-warrant-js";
+import { useAuth4Flow } from "@warrantdev/react-warrant-js";
 
 const MyComponent = () => {
-  const { check } = useWarrant();
+  const { check } = useAuth4Flow();
 
   useEffect(() => {
     const fetchProtectedInfo = async () => {
@@ -162,7 +162,7 @@ Or using the React Context API:
 
 ```jsx
 import React, { useEffect } from "react";
-import { WarrantContext } from "@warrantdev/react-warrant-js";
+import { Auth4FlowContext } from "@warrantdev/react-warrant-js";
 
 class MyComponent extends React.Component {
   async componentDidMount() {
@@ -195,7 +195,7 @@ class MyComponent extends React.Component {
   }
 }
 
-MyComponent.contextType = WarrantContext;
+MyComponent.contextType = Auth4FlowContext;
 
 export default MyComponent;
 ```
@@ -205,9 +205,9 @@ export default MyComponent;
 `checkMany` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has _all of_ or _any of_ (based on a specified `op`) a set of specified `warrants` and returns `false` otherwise.
 
 ```jsx
-import { CheckOp } from "@warrantdev/warrant-js";
+import { CheckOp } from "@auth4flow/auth4flow-js";
 
-const { checkMany } = useWarrant();
+const { checkMany } = useAuth4Flow();
 
 // userIsAuthorized will only be true if the user is
 // a member of tenant-A AND has permission view-protected-info
@@ -237,9 +237,9 @@ const userIsAuthorized = await checkMany({
 `hasPermission` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the specified `permissionId` and returns `false` otherwise.
 
 ```jsx
-import { CheckOp } from "@warrantdev/warrant-js";
+import { CheckOp } from "@auth4flow/auth4flow-js";
 
-const { hasPermission } = useWarrant();
+const { hasPermission } = useAuth4Flow();
 
 // userHasPermission will only be true if the user
 // has the permission view-protected-info
@@ -253,9 +253,9 @@ const userHasPermission = await hasPermission({
 `hasFeature` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the specified `featureId` and returns `false` otherwise.
 
 ```jsx
-import { CheckOp } from "@warrantdev/warrant-js";
+import { CheckOp } from "@auth4flow/auth4flow-js";
 
-const { hasFeature } = useWarrant();
+const { hasFeature } = useAuth4Flow();
 
 // userHasFeature will only be true if the user
 // has the feature protected-info
@@ -356,14 +356,14 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { WarrantProvider, withWarrantCheck } from "@warrantdev/react-warrant-js";
+import { Auth4FlowProvider, withWarrantCheck } from "@warrantdev/react-warrant-js";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
 const history = createBrowserHistory();
 
 const App = () => {
-    return <WarrantProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+    return <Auth4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
         <Router history={history}>
             <Switch>
                 <Route path="/public_route" exact component={PublicPage}/>
@@ -383,7 +383,7 @@ const App = () => {
                 })}>
             </Switch>
         </Router>
-    </WarrantProvider>;
+    </Auth4FlowProvider>;
 };
 
 export default App;
@@ -428,14 +428,14 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { WarrantProvider, withPermissionCheck } from "@warrantdev/react-warrant-js";
+import { Auth4FlowProvider, withPermissionCheck } from "@warrantdev/react-warrant-js";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
 const history = createBrowserHistory();
 
 const App = () => {
-    return <WarrantProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+    return <Auth4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
         <Router history={history}>
             <Switch>
                 <Route path="/public_route" exact component={PublicPage}/>
@@ -449,7 +449,7 @@ const App = () => {
                 })}>
             </Switch>
         </Router>
-    </WarrantProvider>;
+    </Auth4FlowProvider>;
 };
 
 export default App;
@@ -486,14 +486,14 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { WarrantProvider, withFeatureCheck } from "@warrantdev/react-warrant-js";
+import { Auth4FlowProvider, withFeatureCheck } from "@warrantdev/react-warrant-js";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
 const history = createBrowserHistory();
 
 const App = () => {
-    return <WarrantProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+    return <Auth4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
         <Router history={history}>
             <Switch>
                 <Route path="/public_route" exact component={PublicPage}/>
@@ -507,7 +507,7 @@ const App = () => {
                 })}>
             </Switch>
         </Router>
-    </WarrantProvider>;
+    </Auth4FlowProvider>;
 };
 
 export default App;

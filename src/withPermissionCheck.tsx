@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { PermissionCheck } from "@warrantdev/warrant-js";
-import useWarrant from "./useWarrant";
+import { PermissionCheck } from "@auth4flow/auth4flow-js";
+import useAuth4Flow from "./useAuth4Flow";
 
 export interface WithPermissionOptions extends PermissionCheck {
-    redirectTo: string;
+  redirectTo: string;
 }
 
 /**
@@ -13,34 +13,40 @@ export interface WithPermissionOptions extends PermissionCheck {
  * @param options The options containing the permissionId to check for and a redirectTo path for unauthorized access.
  * @returns
  */
-const withPermissionCheck = (WrappedComponent: React.ComponentClass, options: WithPermissionOptions) => {
-    return (props: any) => {
-        const { permissionId, consistentRead, debug, redirectTo } = options;
-        const { sessionToken, hasPermission } = useWarrant();
-        const [showWrappedComponent, setShowWrappedComponent] = useState<boolean>(false);
+const withPermissionCheck = (
+  WrappedComponent: React.ComponentClass,
+  options: WithPermissionOptions
+) => {
+  return (props: any) => {
+    const { permissionId, consistentRead, debug, redirectTo } = options;
+    const { sessionToken, hasPermission } = useAuth4Flow();
+    const [showWrappedComponent, setShowWrappedComponent] =
+      useState<boolean>(false);
 
-        useEffect(() => {
-            const checkWarrant = async () => {
-                setShowWrappedComponent(await hasPermission({ permissionId, consistentRead, debug }));
-            };
+    useEffect(() => {
+      const checkWarrant = async () => {
+        setShowWrappedComponent(
+          await hasPermission({ permissionId, consistentRead, debug })
+        );
+      };
 
-            if (sessionToken) {
-                checkWarrant();
-            }
-        }, [sessionToken]);
+      if (sessionToken) {
+        checkWarrant();
+      }
+    }, [sessionToken]);
 
-        if (!sessionToken) {
-            return <></>;
-        }
-
-        if (showWrappedComponent) {
-            return <WrappedComponent {...props}/>;
-        }
-
-        window.history.replaceState({}, document.title, redirectTo);
-
-        return null;
+    if (!sessionToken) {
+      return <></>;
     }
-}
+
+    if (showWrappedComponent) {
+      return <WrappedComponent {...props} />;
+    }
+
+    window.history.replaceState({}, document.title, redirectTo);
+
+    return null;
+  };
+};
 
 export default withPermissionCheck;

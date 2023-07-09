@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { CheckMany } from "@warrantdev/warrant-js";
-import useWarrant from "./useWarrant";
+import { CheckMany } from "@auth4flow/auth4flow-js";
+import useAuth4Flow from "./useAuth4Flow";
 
 export interface WithWarrantCheckOptions extends CheckMany {
-    redirectTo: string;
+  redirectTo: string;
 }
 
 /**
@@ -13,34 +13,40 @@ export interface WithWarrantCheckOptions extends CheckMany {
  * @param options The options used to construct the warrant(s) to check for. Consists of op, warrants, and a redirectTo path for unauthorized access.
  * @returns
  */
-const withWarrantCheck = (WrappedComponent: React.ComponentClass, options: WithWarrantCheckOptions) => {
-    return (props: any) => {
-        const { op, warrants, consistentRead, debug, redirectTo } = options;
-        const { sessionToken, checkMany } = useWarrant();
-        const [showWrappedComponent, setShowWrappedComponent] = useState<boolean>(false);
+const withWarrantCheck = (
+  WrappedComponent: React.ComponentClass,
+  options: WithWarrantCheckOptions
+) => {
+  return (props: any) => {
+    const { op, warrants, consistentRead, debug, redirectTo } = options;
+    const { sessionToken, checkMany } = useAuth4Flow();
+    const [showWrappedComponent, setShowWrappedComponent] =
+      useState<boolean>(false);
 
-        useEffect(() => {
-            const checkWarrant = async () => {
-                setShowWrappedComponent(await checkMany({ op, warrants, consistentRead, debug }));
-            };
+    useEffect(() => {
+      const checkWarrant = async () => {
+        setShowWrappedComponent(
+          await checkMany({ op, warrants, consistentRead, debug })
+        );
+      };
 
-            if (sessionToken) {
-                checkWarrant();
-            }
-        }, [sessionToken]);
+      if (sessionToken) {
+        checkWarrant();
+      }
+    }, [sessionToken]);
 
-        if (!sessionToken) {
-            return <></>;
-        }
-
-        if (showWrappedComponent) {
-            return <WrappedComponent {...props}/>;
-        }
-
-        window.history.replaceState({}, document.title, redirectTo);
-
-        return null;
+    if (!sessionToken) {
+      return <></>;
     }
-}
+
+    if (showWrappedComponent) {
+      return <WrappedComponent {...props} />;
+    }
+
+    window.history.replaceState({}, document.title, redirectTo);
+
+    return null;
+  };
+};
 
 export default withWarrantCheck;
