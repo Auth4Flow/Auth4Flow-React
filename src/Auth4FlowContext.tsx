@@ -8,8 +8,9 @@ import {
 
 export interface AuthorizationContext {
   clientKey: string;
+  login: () => Promise<boolean>;
   sessionToken: string;
-  setSessionToken: (sessionToken: string) => void;
+  validSession: () => Promise<boolean>;
   check: (check: Check) => Promise<boolean>;
   checkMany: (check: CheckMany) => Promise<boolean>;
   hasPermission: (check: PermissionCheck) => Promise<boolean>;
@@ -23,8 +24,9 @@ const noop = (): never => {
 
 const Auth4FlowContext = createContext<AuthorizationContext>({
   clientKey: "",
+  login: noop,
   sessionToken: "",
-  setSessionToken: noop,
+  validSession: noop,
   check: noop,
   checkMany: noop,
   hasPermission: noop,

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import {
   Auth4FlowClient,
   CheckMany,
@@ -37,11 +37,49 @@ const Auth4FlowProvider = (options: AuthorizationProvider): JSX.Element => {
     localStorage.setItem(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken);
   };
 
+  const login = useCallback(async (): Promise<boolean> => {
+    setIsLoading(true);
+    const newSessionToken = await new Auth4FlowClient({
+      clientKey,
+      endpoint,
+    }).login();
+
+    if (sessionToken) {
+      updateSessionToken(newSessionToken);
+    }
+    setIsLoading(false);
+
+    return sessionToken !== null;
+  }, []);
+
+  const validSession = useCallback(async (): Promise<boolean> => {
+    if (!sessionToken) {
+      throw new Error(
+        "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
+      );
+    }
+
+    setIsLoading(true);
+    const isValidSession = await new Auth4FlowClient({
+      clientKey,
+      sessionToken,
+      endpoint,
+    }).verifySession();
+
+    if (!isValidSession) {
+      updateSessionToken("");
+    }
+
+    setIsLoading(false);
+
+    return isValidSession;
+  }, [sessionToken]);
+
   const check = useCallback(
     async (check: Check): Promise<boolean> => {
       if (!sessionToken) {
         throw new Error(
-          "No session token provided to Warrant. You may have forgotten to call setSessionToken with a valid session token to finish initializing Warrant."
+          "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
         );
       }
 
@@ -62,7 +100,7 @@ const Auth4FlowProvider = (options: AuthorizationProvider): JSX.Element => {
     async (check: CheckMany): Promise<boolean> => {
       if (!sessionToken) {
         throw new Error(
-          "No session token provided to Warrant. You may have forgotten to call setSessionToken with a valid session token to finish initializing Warrant."
+          "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
         );
       }
 
@@ -83,7 +121,7 @@ const Auth4FlowProvider = (options: AuthorizationProvider): JSX.Element => {
     async (check: PermissionCheck): Promise<boolean> => {
       if (!sessionToken) {
         throw new Error(
-          "No session token provided to Warrant. You may have forgotten to call setSessionToken with a valid session token to finish initializing Warrant."
+          "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
         );
       }
 
@@ -104,7 +142,7 @@ const Auth4FlowProvider = (options: AuthorizationProvider): JSX.Element => {
     async (check: FeatureCheck): Promise<boolean> => {
       if (!sessionToken) {
         throw new Error(
-          "No session token provided to Warrant. You may have forgotten to call setSessionToken with a valid session token to finish initializing Warrant."
+          "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
         );
       }
 
@@ -125,8 +163,9 @@ const Auth4FlowProvider = (options: AuthorizationProvider): JSX.Element => {
     <Auth4FlowContext.Provider
       value={{
         clientKey,
+        login,
         sessionToken,
-        setSessionToken: updateSessionToken,
+        validSession,
         check,
         checkMany,
         hasPermission,

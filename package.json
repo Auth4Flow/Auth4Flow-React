@@ -19,6 +19,12 @@
     "url": "git+https://github.com/auth4flow/auth4flow-react.git"
   },
   "keywords": [
+    "auth4flow",
+    "authentication",
+    "identity",
+    "web3",
+    "flow",
+    "iam",
     "warrant",
     "authorization",
     "rbac",
@@ -26,7 +32,7 @@
     "access control",
     "react"
   ],
-  "author": "Auth4Flow <hello@warrant.dev> (https://warrant.dev)",
+  "author": "Auth4Flow (https://github.com/auth4flow)",
   "license": "ELv2",
   "bugs": {
     "url": "https://github.com/auth4flow/auth4flow-react/issues"
@@ -49,8 +55,12 @@
     "xmlhttprequest": "^1.8.0"
   },
   "peerDependencies": {
-    "@auth4flow/auth4flow-js": "^0.1.0",
+    "@auth4flow/auth4flow-js": "file:../Auth4Flow-JS/",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "@mui/material": "^5.13.7",
+    "react-router-dom": "^6.14.1"
   }
 }

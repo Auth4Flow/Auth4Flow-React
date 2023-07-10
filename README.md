@@ -30,7 +30,7 @@ Wrap your application with `Auth4FlowProvider`, passing it your Client Key using
 ```jsx
 // App.jsx
 import React from "react";
-import { Auth4FlowProvider } from "@warrantdev/react-warrant-js";
+import { Auth4FlowProvider } from "@auth4flow/auth4flow-react";
 
 const App = () => {
   return (
@@ -52,7 +52,7 @@ Set the session token using the `useAuth4Flow` hook:
 ```jsx
 // Login.jsx
 import React from "react";
-import { useAuth4Flow } from "@warrantdev/react-warrant-js";
+import { useAuth4Flow } from "@auth4flow/auth4flow-react";
 
 const Login = () => {
   const { setSessionToken } = useAuth4Flow();
@@ -84,7 +84,7 @@ Or using `Context.Consumer`:
 
 ```jsx
 import React from "react";
-import { Auth4FlowContext } from "@warrantdev/react-warrant-js";
+import { Auth4FlowContext } from "@auth4flow/auth4flow-react";
 
 const Login = () => {
   const loginUser = (setSessionToken) => {
@@ -126,7 +126,7 @@ Using `check` through the `useAuth4Flow` hook:
 
 ```jsx
 import React, { useEffect } from "react";
-import { useAuth4Flow } from "@warrantdev/react-warrant-js";
+import { useAuth4Flow } from "@auth4flow/auth4flow-react";
 
 const MyComponent = () => {
   const { check } = useAuth4Flow();
@@ -162,7 +162,7 @@ Or using the React Context API:
 
 ```jsx
 import React, { useEffect } from "react";
-import { Auth4FlowContext } from "@warrantdev/react-warrant-js";
+import { Auth4FlowContext } from "@auth4flow/auth4flow-react";
 
 class MyComponent extends React.Component {
   async componentDidMount() {
@@ -270,7 +270,7 @@ const userHasFeature = await hasFeature({
 
 ```jsx
 import React from "react";
-import { ProtectedComponent } from "@warrantdev/react-warrant-js";
+import { ProtectedComponent } from "@auth4flow/auth4flow-react";
 
 const MyComponent = () => {
   return (
@@ -303,7 +303,7 @@ export default MyComponent;
 
 ```jsx
 import React from "react";
-import { PermissionProtectedComponent } from "@warrantdev/react-warrant-js";
+import { PermissionProtectedComponent } from "@auth4flow/auth4flow-react";
 
 const MyComponent = () => {
   return (
@@ -326,7 +326,7 @@ export default MyComponent;
 
 ```jsx
 import React from "react";
-import { FeatureProtectedComponent } from "@warrantdev/react-warrant-js";
+import { FeatureProtectedComponent } from "@auth4flow/auth4flow-react";
 
 const MyComponent = () => {
   return (
@@ -356,7 +356,7 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { Auth4FlowProvider, withWarrantCheck } from "@warrantdev/react-warrant-js";
+import { Auth4FlowProvider, withWarrantCheck } from "@auth4flow/auth4flow-react";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
@@ -393,7 +393,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import { withWarrantCheck } from "@warrantdev/react-warrant-js";
+import { withWarrantCheck } from "@auth4flow/auth4flow-react";
 
 const MySecretComponent = () => {
   return <div>Super secret text</div>;
@@ -428,7 +428,7 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { Auth4FlowProvider, withPermissionCheck } from "@warrantdev/react-warrant-js";
+import { Auth4FlowProvider, withPermissionCheck } from "@auth4flow/auth4flow-react";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
@@ -459,7 +459,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import { withPermissionCheck } from "@warrantdev/react-warrant-js";
+import { withPermissionCheck } from "@auth4flow/auth4flow-react";
 
 const MySecretComponent = () => {
   return <div>Super secret text</div>;
@@ -486,7 +486,7 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { Auth4FlowProvider, withFeatureCheck } from "@warrantdev/react-warrant-js";
+import { Auth4FlowProvider, withFeatureCheck } from "@auth4flow/auth4flow-react";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
@@ -517,7 +517,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import { withFeatureCheck } from "@warrantdev/react-warrant-js";
+import { withFeatureCheck } from "@auth4flow/auth4flow-react";
 
 const MySecretComponent = () => {
   return <div>Super secret text</div>;
