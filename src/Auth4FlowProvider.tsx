@@ -12,12 +12,12 @@ import Auth4FlowContext from "./Auth4FlowContext";
 export interface AuthorizationProvider {
   clientKey: string;
   endpoint?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const LOCAL_STORAGE_KEY_SESSION_TOKEN = "__auth4FlowSessionToken";
 
-const Auth4FlowProvider = (options: AuthorizationProvider): JSX.Element => {
+function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
   const { clientKey, endpoint, children } = options;
   const [sessionToken, setSessionToken] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -44,7 +44,7 @@ const Auth4FlowProvider = (options: AuthorizationProvider): JSX.Element => {
       endpoint,
     }).login();
 
-    if (sessionToken) {
+    if (newSessionToken) {
       updateSessionToken(newSessionToken);
     }
     setIsLoading(false);
@@ -54,9 +54,7 @@ const Auth4FlowProvider = (options: AuthorizationProvider): JSX.Element => {
 
   const validSession = useCallback(async (): Promise<boolean> => {
     if (!sessionToken) {
-      throw new Error(
-        "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
-      );
+      return false;
     }
 
     setIsLoading(true);
@@ -176,6 +174,6 @@ const Auth4FlowProvider = (options: AuthorizationProvider): JSX.Element => {
       {children}
     </Auth4FlowContext.Provider>
   );
-};
+}
 
 export default Auth4FlowProvider;
