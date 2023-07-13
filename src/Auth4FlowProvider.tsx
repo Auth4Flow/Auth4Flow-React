@@ -8,6 +8,7 @@ import {
 } from "@auth4flow/auth4flow-js";
 
 import Auth4FlowContext from "./Auth4FlowContext";
+import cookieCutter from "@boiseitguru/cookie-cutter";
 
 export interface AuthorizationProvider {
   clientKey: string;
@@ -23,7 +24,7 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const storedSessionToken = localStorage.getItem(
+    const storedSessionToken = cookieCutter.get(
       LOCAL_STORAGE_KEY_SESSION_TOKEN
     );
     if (storedSessionToken) {
@@ -34,7 +35,7 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
   const updateSessionToken = (newSessionToken: string) => {
     setSessionToken(newSessionToken);
 
-    localStorage.setItem(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken);
+    cookieCutter.set(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken);
   };
 
   const login = useCallback(async (): Promise<boolean> => {
