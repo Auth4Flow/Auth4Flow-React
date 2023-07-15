@@ -1,13 +1,13 @@
 import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import {
-  Auth4FlowClient,
+  Forge4FlowClient,
   CheckMany,
   Check,
   PermissionCheck,
   FeatureCheck,
-} from "@auth4flow/auth4flow-js";
+} from "@forge4flow/forge4flow-js";
 
-import Auth4FlowContext from "./Auth4FlowContext";
+import Forge4FlowContext from "./Forge4FlowContext";
 import cookieCutter from "@boiseitguru/cookie-cutter";
 
 export interface AuthorizationProvider {
@@ -16,12 +16,13 @@ export interface AuthorizationProvider {
   children: ReactNode;
 }
 
-const LOCAL_STORAGE_KEY_SESSION_TOKEN = "__auth4FlowSessionToken";
+const LOCAL_STORAGE_KEY_SESSION_TOKEN = "__forge4FlowSessionToken";
 
-function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
+function Forge4FlowProvider(options: AuthorizationProvider): JSX.Element {
   const { clientKey, endpoint, children } = options;
   const [sessionToken, setSessionToken] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     const storedSessionToken = cookieCutter.get(
@@ -29,18 +30,19 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
     );
     if (storedSessionToken) {
       setSessionToken(storedSessionToken);
+      setIsAuthenticated(true);
     }
   }, []);
 
-  const updateSessionToken = (newSessionToken: string) => {
+  const updateSessionToken = (newSessionToken?: string) => {
     setSessionToken(newSessionToken);
 
-    cookieCutter.set(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken);
+    cookieCutter.set(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken || "");
   };
 
-  const login = useCallback(async (): Promise<boolean> => {
+  const authenticate = useCallback(async (): Promise<boolean> => {
     setIsLoading(true);
-    const newSessionToken = await new Auth4FlowClient({
+    const newSessionToken = await new Forge4FlowClient({
       clientKey,
       endpoint,
     }).login();
@@ -48,18 +50,26 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
     if (newSessionToken) {
       updateSessionToken(newSessionToken);
     }
+    setIsAuthenticated(true);
     setIsLoading(false);
 
     return sessionToken !== null;
   }, []);
 
+  const unauthenticate = useCallback((): void => {
+    setIsLoading(true);
+    updateSessionToken();
+    setIsAuthenticated(false);
+    setIsLoading(false);
+  }, []);
+
   const validSession = useCallback(async (): Promise<boolean> => {
-    if (!sessionToken) {
+    if (!sessionToken || sessionToken === "undefined") {
       return false;
     }
 
     setIsLoading(true);
-    const isValidSession = await new Auth4FlowClient({
+    const isValidSession = await new Forge4FlowClient({
       clientKey,
       sessionToken,
       endpoint,
@@ -67,6 +77,7 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
 
     if (!isValidSession) {
       updateSessionToken("");
+      setIsAuthenticated(false);
     }
 
     setIsLoading(false);
@@ -78,12 +89,12 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
     async (check: Check): Promise<boolean> => {
       if (!sessionToken) {
         throw new Error(
-          "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
+          "No session provided to Forge4Flow. You may have forgotten to call login() to finish initializing Forge4Flow."
         );
       }
 
       setIsLoading(true);
-      const isAuthorized = await new Auth4FlowClient({
+      const isAuthorized = await new Forge4FlowClient({
         clientKey,
         sessionToken,
         endpoint,
@@ -99,12 +110,12 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
     async (check: CheckMany): Promise<boolean> => {
       if (!sessionToken) {
         throw new Error(
-          "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
+          "No session provided to Forge4Flow. You may have forgotten to call login() to finish initializing Forge4Flow."
         );
       }
 
       setIsLoading(true);
-      const isAuthorized = await new Auth4FlowClient({
+      const isAuthorized = await new Forge4FlowClient({
         clientKey,
         sessionToken,
         endpoint,
@@ -120,12 +131,12 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
     async (check: PermissionCheck): Promise<boolean> => {
       if (!sessionToken) {
         throw new Error(
-          "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
+          "No session provided to Forge4Flow. You may have forgotten to call login() to finish initializing Forge4Flow."
         );
       }
 
       setIsLoading(true);
-      const hasPermission = await new Auth4FlowClient({
+      const hasPermission = await new Forge4FlowClient({
         clientKey,
         sessionToken,
         endpoint,
@@ -141,12 +152,12 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
     async (check: FeatureCheck): Promise<boolean> => {
       if (!sessionToken) {
         throw new Error(
-          "No session provided to Auth4Flow. You may have forgotten to call login() to finish initializing Auth4Flow."
+          "No session provided to Forge4Flow. You may have forgotten to call login() to finish initializing Forge4Flow."
         );
       }
 
       setIsLoading(true);
-      const hasFeature = await new Auth4FlowClient({
+      const hasFeature = await new Forge4FlowClient({
         clientKey,
         sessionToken,
         endpoint,
@@ -159,10 +170,11 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
   );
 
   return (
-    <Auth4FlowContext.Provider
+    <Forge4FlowContext.Provider
       value={{
         clientKey,
-        login,
+        authenticate,
+        unauthenticate,
         sessionToken,
         validSession,
         check,
@@ -170,11 +182,12 @@ function Auth4FlowProvider(options: AuthorizationProvider): JSX.Element {
         hasPermission,
         hasFeature,
         isLoading,
+        isAuthenticated,
       }}
     >
       {children}
-    </Auth4FlowContext.Provider>
+    </Forge4FlowContext.Provider>
   );
 }
 
-export default Auth4FlowProvider;
+export default Forge4FlowProvider;

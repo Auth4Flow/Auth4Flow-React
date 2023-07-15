@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { CheckMany } from "@auth4flow/auth4flow-js";
-import useAuth4Flow from "./useAuth4Flow";
+import { CheckMany } from "@forge4flow/forge4flow-js";
+import useForge4Flow from "./useForge4Flow";
 
 export interface ProtectedComponentProps extends CheckMany {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = ({
   debug,
 }) => {
   const [showChildren, setShowChildren] = useState<boolean>(false);
-  const { sessionToken, checkMany } = useAuth4Flow();
+  const { sessionToken, checkMany } = useForge4Flow();
 
   useEffect(() => {
     if (!warrants || warrants.length === 0) {

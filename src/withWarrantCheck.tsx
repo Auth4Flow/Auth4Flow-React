@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { CheckMany } from "@auth4flow/auth4flow-js";
-import useAuth4Flow from "./useAuth4Flow";
+import { CheckMany } from "@forge4flow/forge4flow-js";
+import useForge4Flow from "./useForge4Flow";
 
 export interface WithWarrantCheckOptions extends CheckMany {
   redirectTo: string;
@@ -19,7 +19,7 @@ const withWarrantCheck = (
 ) => {
   return (props: any) => {
     const { op, warrants, consistentRead, debug, redirectTo } = options;
-    const { sessionToken, checkMany } = useAuth4Flow();
+    const { sessionToken, checkMany } = useForge4Flow();
     const [showWrappedComponent, setShowWrappedComponent] =
       useState<boolean>(false);
 

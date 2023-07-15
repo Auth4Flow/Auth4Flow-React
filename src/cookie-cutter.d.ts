@@ -1,5 +1,5 @@
 interface CookieOptions {
-  expires?: string;
+  expires?: Date;
   path?: string;
   domain?: string;
   secure?: boolean;

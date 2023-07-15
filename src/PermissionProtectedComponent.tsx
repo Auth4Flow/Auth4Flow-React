@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { PermissionCheck } from "@auth4flow/auth4flow-js";
-import useAuth4Flow from "./useAuth4Flow";
+import { PermissionCheck } from "@forge4flow/forge4flow-js";
+import useForge4Flow from "./useForge4Flow";
 
 export interface PermissionProtectedComponentProps extends PermissionCheck {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ const PermissionProtectedComponent: React.FunctionComponent<
   PermissionProtectedComponentProps
 > = ({ children, permissionId, consistentRead, debug }) => {
   const [showChildren, setShowChildren] = useState<boolean>(false);
-  const { sessionToken, hasPermission } = useAuth4Flow();
+  const { sessionToken, hasPermission } = useForge4Flow();
 
   useEffect(() => {
     if (!permissionId) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { PermissionCheck } from "@auth4flow/auth4flow-js";
-import useAuth4Flow from "./useAuth4Flow";
+import { PermissionCheck } from "@forge4flow/forge4flow-js";
+import useForge4Flow from "./useForge4Flow";
 
 export interface WithPermissionOptions extends PermissionCheck {
   redirectTo: string;
@@ -19,7 +19,7 @@ const withPermissionCheck = (
 ) => {
   return (props: any) => {
     const { permissionId, consistentRead, debug, redirectTo } = options;
-    const { sessionToken, hasPermission } = useAuth4Flow();
+    const { sessionToken, hasPermission } = useForge4Flow();
     const [showWrappedComponent, setShowWrappedComponent] =
       useState<boolean>(false);
 

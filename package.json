@@ -1,7 +1,7 @@
 {
-  "name": "@auth4flow/auth4flow-react",
-  "version": "0.1.4",
-  "description": "React components for Auth4Flow",
+  "name": "@forge4flow/forge4flow-react",
+  "version": "0.0.1",
+  "description": "React components for Forge4Flow",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -16,10 +16,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/auth4flow/auth4flow-react.git"
+    "url": "git+https://github.com/forge4flow/forge4flow-react.git"
   },
   "keywords": [
-    "auth4flow",
+    "forge4flow",
     "authentication",
     "identity",
     "web3",
@@ -32,12 +32,12 @@
     "access control",
     "react"
   ],
-  "author": "Auth4Flow (https://github.com/auth4flow)",
+  "author": "Forge4Flow (https://github.com/forge4flow)",
   "license": "ELv2",
   "bugs": {
-    "url": "https://github.com/auth4flow/auth4flow-react/issues"
+    "url": "https://github.com/forge4flow/forge4flow-react/issues"
   },
-  "homepage": "https://github.com/auth4flow/auth4flow-react",
+  "homepage": "https://github.com/forge4flow/forge4flow-react",
   "devDependencies": {
     "@testing-library/react": "^13.4.0",
     "@types/jest": "^29.2.5",
@@ -59,7 +59,7 @@
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {
-    "@auth4flow/auth4flow-js": "0.1.2",
+    "@forge4flow/forge4flow-js": "0.0.1",
     "@boiseitguru/cookie-cutter": "file:/Users/boiseitguru/Development/BoiseITGuru/cookie-cutter",
     "@mui/material": "^5.13.7"
   }

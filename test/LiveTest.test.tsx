@@ -13,7 +13,7 @@ import { render, cleanup, waitFor, screen } from "@testing-library/react";
 global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 import {
-  Auth4FlowClient,
+  Forge4FlowClient,
   Role,
   Permission,
   PricingTier,
@@ -24,8 +24,8 @@ import {
   ProtectedComponent,
   PermissionProtectedComponent,
   FeatureProtectedComponent,
-  useAuth4Flow,
-  Auth4FlowProvider,
+  useForge4Flow,
+  Forge4FlowProvider,
 } from "../dist";
 
 interface TestAppProps {
@@ -40,9 +40,9 @@ const TestApp: React.FunctionComponent<TestAppProps> = ({
   sessionToken,
 }) => {
   return (
-    <Auth4FlowProvider clientKey={clientKey}>
+    <Forge4FlowProvider clientKey={clientKey}>
       <TestPage sessionToken={sessionToken}>{children}</TestPage>
-    </Auth4FlowProvider>
+    </Forge4FlowProvider>
   );
 };
 
@@ -55,7 +55,7 @@ const TestPage: React.FunctionComponent<TestPageProps> = ({
   children,
   sessionToken,
 }) => {
-  const { setSessionToken } = useAuth4Flow();
+  const { setSessionToken } = useForge4Flow();
 
   useEffect(() => {
     setSessionToken(sessionToken);
@@ -77,7 +77,7 @@ describe.skip("Live Test", () => {
   let sessionToken: string;
 
   beforeAll(async () => {
-    const warrant = new Auth4FlowClient({ apiKey });
+    const warrant = new Forge4FlowClient({ apiKey });
     role = await Role.create({ roleId: "test-role" });
     permission = await warrant.Permission.create({
       permissionId: "test-permission",
@@ -98,7 +98,7 @@ describe.skip("Live Test", () => {
   });
 
   afterAll(async () => {
-    const warrant = new Auth4FlowClient({ apiKey });
+    const warrant = new Forge4FlowClient({ apiKey });
 
     await user.removePricingTier(pricingTier.pricingTierId);
     await user.removeRole(role.roleId);
@@ -114,7 +114,7 @@ describe.skip("Live Test", () => {
 
   afterEach(cleanup);
 
-  test("<Auth4FlowProvider />", async () => {
+  test("<Forge4FlowProvider />", async () => {
     render(
       <TestApp clientKey={clientKey} sessionToken={sessionToken}>
         <ProtectedComponent

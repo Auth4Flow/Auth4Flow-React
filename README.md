@@ -23,20 +23,20 @@ npm install @warrantdev/react-warrant-js
 
 ## Usage
 
-### `Auth4FlowProvider`
+### `Forge4FlowProvider`
 
-Wrap your application with `Auth4FlowProvider`, passing it your Client Key using the `clientKey` prop. `Auth4FlowProvider` uses [React Context](https://reactjs.org/docs/context.html) to allow you to access utility methods for performing access checks anywhere in your app.
+Wrap your application with `Forge4FlowProvider`, passing it your Client Key using the `clientKey` prop. `Forge4FlowProvider` uses [React Context](https://reactjs.org/docs/context.html) to allow you to access utility methods for performing access checks anywhere in your app.
 
 ```jsx
 // App.jsx
 import React from "react";
-import { Auth4FlowProvider } from "@auth4flow/auth4flow-react";
+import { Forge4FlowProvider } from "@forge4flow/forge4flow-react";
 
 const App = () => {
   return (
-    <Auth4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+    <Forge4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
       {/* Routes, ThemeProviders, etc. */}
-    </Auth4FlowProvider>
+    </Forge4FlowProvider>
   );
 };
 
@@ -47,15 +47,15 @@ export default App;
 
 In order to finish initializing the library and begin performing access checks in your app, you must provide a server-generated session token and set it using the `setSessionToken` method. Otherwise your requests will be denied by the Warrant API.
 
-Set the session token using the `useAuth4Flow` hook:
+Set the session token using the `useForge4Flow` hook:
 
 ```jsx
 // Login.jsx
 import React from "react";
-import { useAuth4Flow } from "@auth4flow/auth4flow-react";
+import { useForge4Flow } from "@forge4flow/forge4flow-react";
 
 const Login = () => {
-  const { setSessionToken } = useAuth4Flow();
+  const { setSessionToken } = useForge4Flow();
 
   const loginUser = async (event) => {
     const response = await login(email, password);
@@ -84,7 +84,7 @@ Or using `Context.Consumer`:
 
 ```jsx
 import React from "react";
-import { Auth4FlowContext } from "@auth4flow/auth4flow-react";
+import { Forge4FlowContext } from "@forge4flow/forge4flow-react";
 
 const Login = () => {
   const loginUser = (setSessionToken) => {
@@ -105,13 +105,13 @@ const Login = () => {
   };
 
   return (
-    <Auth4FlowContext.Consumer>
+    <Forge4FlowContext.Consumer>
       {({ setSessionToken }) => (
         <form onSubmit={loginUser(setSessionToken)}>
           {/* email & password inputs, etc. */}
         </form>
       )}
-    </Auth4FlowContext.Consumer>
+    </Forge4FlowContext.Consumer>
   );
 };
 
@@ -122,14 +122,14 @@ export default Login;
 
 `check` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the specified `relation` on the specified `object` and returns `false` otherwise. Use it for fine-grained conditional rendering or for specific logic within components.
 
-Using `check` through the `useAuth4Flow` hook:
+Using `check` through the `useForge4Flow` hook:
 
 ```jsx
 import React, { useEffect } from "react";
-import { useAuth4Flow } from "@auth4flow/auth4flow-react";
+import { useForge4Flow } from "@forge4flow/forge4flow-react";
 
 const MyComponent = () => {
-  const { check } = useAuth4Flow();
+  const { check } = useForge4Flow();
 
   useEffect(() => {
     const fetchProtectedInfo = async () => {
@@ -162,7 +162,7 @@ Or using the React Context API:
 
 ```jsx
 import React, { useEffect } from "react";
-import { Auth4FlowContext } from "@auth4flow/auth4flow-react";
+import { Forge4FlowContext } from "@forge4flow/forge4flow-react";
 
 class MyComponent extends React.Component {
   async componentDidMount() {
@@ -195,7 +195,7 @@ class MyComponent extends React.Component {
   }
 }
 
-MyComponent.contextType = Auth4FlowContext;
+MyComponent.contextType = Forge4FlowContext;
 
 export default MyComponent;
 ```
@@ -205,9 +205,9 @@ export default MyComponent;
 `checkMany` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has _all of_ or _any of_ (based on a specified `op`) a set of specified `warrants` and returns `false` otherwise.
 
 ```jsx
-import { CheckOp } from "@auth4flow/auth4flow-js";
+import { CheckOp } from "@forge4flow/forge4flow-js";
 
-const { checkMany } = useAuth4Flow();
+const { checkMany } = useForge4Flow();
 
 // userIsAuthorized will only be true if the user is
 // a member of tenant-A AND has permission view-protected-info
@@ -237,9 +237,9 @@ const userIsAuthorized = await checkMany({
 `hasPermission` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the specified `permissionId` and returns `false` otherwise.
 
 ```jsx
-import { CheckOp } from "@auth4flow/auth4flow-js";
+import { CheckOp } from "@forge4flow/forge4flow-js";
 
-const { hasPermission } = useAuth4Flow();
+const { hasPermission } = useForge4Flow();
 
 // userHasPermission will only be true if the user
 // has the permission view-protected-info
@@ -253,9 +253,9 @@ const userHasPermission = await hasPermission({
 `hasFeature` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the specified `featureId` and returns `false` otherwise.
 
 ```jsx
-import { CheckOp } from "@auth4flow/auth4flow-js";
+import { CheckOp } from "@forge4flow/forge4flow-js";
 
-const { hasFeature } = useAuth4Flow();
+const { hasFeature } = useForge4Flow();
 
 // userHasFeature will only be true if the user
 // has the feature protected-info
@@ -270,7 +270,7 @@ const userHasFeature = await hasFeature({
 
 ```jsx
 import React from "react";
-import { ProtectedComponent } from "@auth4flow/auth4flow-react";
+import { ProtectedComponent } from "@forge4flow/forge4flow-react";
 
 const MyComponent = () => {
   return (
@@ -303,7 +303,7 @@ export default MyComponent;
 
 ```jsx
 import React from "react";
-import { PermissionProtectedComponent } from "@auth4flow/auth4flow-react";
+import { PermissionProtectedComponent } from "@forge4flow/forge4flow-react";
 
 const MyComponent = () => {
   return (
@@ -326,7 +326,7 @@ export default MyComponent;
 
 ```jsx
 import React from "react";
-import { FeatureProtectedComponent } from "@auth4flow/auth4flow-react";
+import { FeatureProtectedComponent } from "@forge4flow/forge4flow-react";
 
 const MyComponent = () => {
   return (
@@ -356,14 +356,14 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { Auth4FlowProvider, withWarrantCheck } from "@auth4flow/auth4flow-react";
+import { Forge4FlowProvider, withWarrantCheck } from "@forge4flow/forge4flow-react";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
 const history = createBrowserHistory();
 
 const App = () => {
-    return <Auth4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+    return <Forge4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
         <Router history={history}>
             <Switch>
                 <Route path="/public_route" exact component={PublicPage}/>
@@ -383,7 +383,7 @@ const App = () => {
                 })}>
             </Switch>
         </Router>
-    </Auth4FlowProvider>;
+    </Forge4FlowProvider>;
 };
 
 export default App;
@@ -393,7 +393,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import { withWarrantCheck } from "@auth4flow/auth4flow-react";
+import { withWarrantCheck } from "@forge4flow/forge4flow-react";
 
 const MySecretComponent = () => {
   return <div>Super secret text</div>;
@@ -428,14 +428,14 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { Auth4FlowProvider, withPermissionCheck } from "@auth4flow/auth4flow-react";
+import { Forge4FlowProvider, withPermissionCheck } from "@forge4flow/forge4flow-react";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
 const history = createBrowserHistory();
 
 const App = () => {
-    return <Auth4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+    return <Forge4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
         <Router history={history}>
             <Switch>
                 <Route path="/public_route" exact component={PublicPage}/>
@@ -449,7 +449,7 @@ const App = () => {
                 })}>
             </Switch>
         </Router>
-    </Auth4FlowProvider>;
+    </Forge4FlowProvider>;
 };
 
 export default App;
@@ -459,7 +459,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import { withPermissionCheck } from "@auth4flow/auth4flow-react";
+import { withPermissionCheck } from "@forge4flow/forge4flow-react";
 
 const MySecretComponent = () => {
   return <div>Super secret text</div>;
@@ -486,14 +486,14 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { Auth4FlowProvider, withFeatureCheck } from "@auth4flow/auth4flow-react";
+import { Forge4FlowProvider, withFeatureCheck } from "@forge4flow/forge4flow-react";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
 const history = createBrowserHistory();
 
 const App = () => {
-    return <Auth4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+    return <Forge4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
         <Router history={history}>
             <Switch>
                 <Route path="/public_route" exact component={PublicPage}/>
@@ -507,7 +507,7 @@ const App = () => {
                 })}>
             </Switch>
         </Router>
-    </Auth4FlowProvider>;
+    </Forge4FlowProvider>;
 };
 
 export default App;
@@ -517,7 +517,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import { withFeatureCheck } from "@auth4flow/auth4flow-react";
+import { withFeatureCheck } from "@forge4flow/forge4flow-react";
 
 const MySecretComponent = () => {
   return <div>Super secret text</div>;

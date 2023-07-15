@@ -4,11 +4,12 @@ import {
   CheckMany,
   FeatureCheck,
   PermissionCheck,
-} from "@auth4flow/auth4flow-js";
+} from "@forge4flow/forge4flow-js";
 
 export interface AuthorizationContext {
   clientKey: string;
-  login: () => Promise<boolean>;
+  authenticate: () => Promise<boolean>;
+  unauthenticate: () => void;
   sessionToken: string;
   validSession: () => Promise<boolean>;
   check: (check: Check) => Promise<boolean>;
@@ -16,15 +17,17 @@ export interface AuthorizationContext {
   hasPermission: (check: PermissionCheck) => Promise<boolean>;
   hasFeature: (check: FeatureCheck) => Promise<boolean>;
   isLoading: boolean;
+  isAuthenticated: boolean;
 }
 
 const noop = (): never => {
-  throw new Error("You didn't wrap your component in <Auth4FlowProvider>!");
+  throw new Error("You didn't wrap your component in <Forge4FlowProvider>!");
 };
 
-const Auth4FlowContext = createContext<AuthorizationContext>({
+const Forge4FlowContext = createContext<AuthorizationContext>({
   clientKey: "",
-  login: noop,
+  authenticate: noop,
+  unauthenticate: noop,
   sessionToken: "",
   validSession: noop,
   check: noop,
@@ -32,6 +35,7 @@ const Auth4FlowContext = createContext<AuthorizationContext>({
   hasPermission: noop,
   hasFeature: noop,
   isLoading: false,
+  isAuthenticated: false,
 });
 
-export default Auth4FlowContext;
+export default Forge4FlowContext;
