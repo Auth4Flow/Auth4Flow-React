@@ -1,6 +1,6 @@
 {
   "name": "@forge4flow/forge4flow-react",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "React components for Forge4Flow",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

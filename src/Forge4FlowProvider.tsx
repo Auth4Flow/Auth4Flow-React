@@ -37,7 +37,13 @@ function Forge4FlowProvider(options: AuthorizationProvider): JSX.Element {
   const updateSessionToken = (newSessionToken?: string) => {
     setSessionToken(newSessionToken);
 
-    cookieCutter.set(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken || "");
+    if (newSessionToken) {
+      cookieCutter.set(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken);
+    } else {
+      cookieCutter.set(LOCAL_STORAGE_KEY_SESSION_TOKEN, "", {
+        expires: new Date(0),
+      });
+    }
   };
 
   const authenticate = useCallback(async (): Promise<boolean> => {
