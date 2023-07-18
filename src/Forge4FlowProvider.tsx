@@ -16,7 +16,7 @@ export interface AuthorizationProvider {
   children: ReactNode;
 }
 
-const LOCAL_STORAGE_KEY_SESSION_TOKEN = "__forge4FlowSessionToken";
+const SESSION_TOKEN_KEY = "__forge4FlowSessionToken";
 
 function Forge4FlowProvider(options: AuthorizationProvider): JSX.Element {
   const { clientKey, endpoint, children } = options;
@@ -25,9 +25,7 @@ function Forge4FlowProvider(options: AuthorizationProvider): JSX.Element {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    const storedSessionToken = cookieCutter.get(
-      LOCAL_STORAGE_KEY_SESSION_TOKEN
-    );
+    const storedSessionToken = cookieCutter.get(SESSION_TOKEN_KEY);
     if (storedSessionToken) {
       setSessionToken(storedSessionToken);
       setIsAuthenticated(true);
@@ -38,9 +36,9 @@ function Forge4FlowProvider(options: AuthorizationProvider): JSX.Element {
     setSessionToken(newSessionToken);
 
     if (newSessionToken) {
-      cookieCutter.set(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken);
+      cookieCutter.set(SESSION_TOKEN_KEY, newSessionToken);
     } else {
-      cookieCutter.set(LOCAL_STORAGE_KEY_SESSION_TOKEN, "", {
+      cookieCutter.set(SESSION_TOKEN_KEY, "", {
         expires: new Date(0),
       });
     }

@@ -1,31 +1,24 @@
-# @warrantdev/react-warrant-js
+# @forge4flow/forge4flow-react
 
-[![npm](https://img.shields.io/npm/v/@warrantdev/react-warrant-js)](https://www.npmjs.com/package/@warrantdev/react-warrant-js)
-[![Slack](https://img.shields.io/badge/slack-join-brightgreen)](https://join.slack.com/t/warrantcommunity/shared_invite/zt-12g84updv-5l1pktJf2bI5WIKN4_~f4w)
+[![npm](https://img.shields.io/npm/v/@forge4flow/forge4flow-react)](https://www.npmjs.com/package/@forge4flow/forge4flow-react)
 
 ## Overview
 
-The Warrant React library provides components, hooks, and helper methods for controlling access to pages and components in React using [Warrant](https://warrant.dev/). The library interacts directly with the Warrant API using short-lived session tokens that must be created server-side using your API key. Refer to [this guide](https://docs.warrant.dev/guides/creating-session-tokens) to see how to generate session tokens for your users.
+The Forge4Flow React library provides components, hooks, and helper methods for controlling access to pages and components in React using [Forge4Flow](https://github.com/Forge4Flow). The library interacts directly with the Forge4Flow-Core API using short-lived session tokens that can be created server-side using your API key or using the built in Authentication methods.
 
 ## Installation
 
-Use `npm` to install the core Warrant client module [`@warrantdev/warrant-js`](https://github.com/warrant-dev/warrant-js). This module includes methods shared across our client libraries (Vue, Angular, etc.) and additional types (for TypeScript users).
+Use `npm` to install `@forge4flow/forge4flow-react`:
 
 ```sh
-npm install @warrantdev/warrant-js
-```
-
-Use `npm` to install `@warrantdev/react-warrant-js`:
-
-```sh
-npm install @warrantdev/react-warrant-js
+npm install @forge4flow/forge4flow-react
 ```
 
 ## Usage
 
 ### `Forge4FlowProvider`
 
-Wrap your application with `Forge4FlowProvider`, passing it your Client Key using the `clientKey` prop. `Forge4FlowProvider` uses [React Context](https://reactjs.org/docs/context.html) to allow you to access utility methods for performing access checks anywhere in your app.
+Wrap your application with `Forge4FlowProvider`, passing it your Client Key and API Endpoint. `Forge4FlowProvider` uses [React Context](https://reactjs.org/docs/context.html) to allow you to access utility methods for performing access checks anywhere in your app.
 
 ```jsx
 // App.jsx
@@ -34,7 +27,10 @@ import { Forge4FlowProvider } from "@forge4flow/forge4flow-react";
 
 const App = () => {
   return (
-    <Forge4FlowProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+    <Forge4FlowProvider
+      clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E="
+      endpoint="https://your_api_endpoint.com"
+    >
       {/* Routes, ThemeProviders, etc. */}
     </Forge4FlowProvider>
   );
@@ -43,79 +39,22 @@ const App = () => {
 export default App;
 ```
 
-#### **Setting the Session Token**
+#### **Authentication**
 
-In order to finish initializing the library and begin performing access checks in your app, you must provide a server-generated session token and set it using the `setSessionToken` method. Otherwise your requests will be denied by the Warrant API.
-
-Set the session token using the `useForge4Flow` hook:
+Once your application has been wrapped with `Forge4FlowProvider` you can simple call add the `useForge4Flow` hook then call the `authenticate` method.
 
 ```jsx
-// Login.jsx
-import React from "react";
-import { useForge4Flow } from "@forge4flow/forge4flow-react";
+import { useForge4Flow } from "@forge4flow/forge4flow-nextjs";
 
-const Login = () => {
-  const { setSessionToken } = useForge4Flow();
+const auth = useForge4Flow();
 
-  const loginUser = async (event) => {
-    const response = await login(email, password);
+const handleLogin = async () => {
+  const login = await auth.authenticate();
 
-    // NOTE: This session token must be generated
-    // server-side when logging users into your
-    // application and then passed to the client.
-    // Access check calls in this library will fail
-    // if the session token is invalid or not set.
-    setSessionToken(response.warrantSessionToken);
-
-    //
-    // Redirect user to logged in page
-    //
-  };
-
-  return (
-    <form onSubmit={loginUser}>{/* email & password inputs, etc. */}</form>
-  );
+  if (login) {
+    router.push("/admin");
+  }
 };
-
-export default Login;
-```
-
-Or using `Context.Consumer`:
-
-```jsx
-import React from "react";
-import { Forge4FlowContext } from "@forge4flow/forge4flow-react";
-
-const Login = () => {
-  const loginUser = (setSessionToken) => {
-    return async (event) => {
-      const response = await login(email, password);
-
-      // NOTE: This session token must be generated
-      // server-side when logging users into your
-      // application and then passed to the client.
-      // Access check calls in this library will fail
-      // if the session token is invalid or not set.
-      setSessionToken(response.warrantSessionToken);
-
-      //
-      // Redirect user to logged in page
-      //
-    };
-  };
-
-  return (
-    <Forge4FlowContext.Consumer>
-      {({ setSessionToken }) => (
-        <form onSubmit={loginUser(setSessionToken)}>
-          {/* email & password inputs, etc. */}
-        </form>
-      )}
-    </Forge4FlowContext.Consumer>
-  );
-};
-
-export default Login;
 ```
 
 ### `check`
@@ -343,9 +282,9 @@ const MyComponent = () => {
 export default MyComponent;
 ```
 
-### `withWarrantCheck`
+### `withForge4FlowCheck`
 
-Use the `withWarrantCheck` Higher Order Component (HOC) to protect components that should only be accessible to users with certain privileges.
+Use the `withForge4FlowCheck` Higher Order Component (HOC) to protect components that should only be accessible to users with certain privileges.
 
 #### **Protecting Routes**
 
@@ -356,7 +295,7 @@ NOTE: This example uses `react-router` but you can use any routing library.
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { Forge4FlowProvider, withWarrantCheck } from "@forge4flow/forge4flow-react";
+import { Forge4FlowProvider, withForge4FlowCheck } from "@forge4flow/forge4flow-react";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
@@ -371,7 +310,7 @@ const App = () => {
                     Only render ProtectedPage if the user
                     can "view" the route "protected_route".
                 */}
-                <Route path="/protected_route" exact component={withWarrantCheck(ProtectedPage, {
+                <Route path="/protected_route" exact component={withForge4FlowCheck(ProtectedPage, {
                     warrants: [{
                         object: {
                             objectType: "route",
@@ -393,7 +332,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import { withWarrantCheck } from "@forge4flow/forge4flow-react";
+import { withForge4FlowCheck } from "@forge4flow/forge4flow-react";
 
 const MySecretComponent = () => {
   return <div>Super secret text</div>;
@@ -401,7 +340,7 @@ const MySecretComponent = () => {
 
 // Only render MySecretComponent if the user
 // can "view" the component "MySecretComponent".
-export default withWarrantCheck(MySecretComponent, {
+export default withForge4FlowCheck(MySecretComponent, {
   warrants: [
     {
       object: {
@@ -530,24 +469,3 @@ export default withFeatureCheck(MySecretComponent, {
   redirectTo: "/",
 });
 ```
-
-## Notes
-
-We’ve used a random Client Key in these code examples. Be sure to replace it with your
-[actual Client Key](https://app.warrant.dev) to
-test this code through your own Warrant account.
-
-For more information on how to use the Warrant API, please refer to the
-[Warrant API reference](https://docs.warrant.dev).
-
-## TypeScript support
-
-This package includes TypeScript declarations for Warrant.
-
-Note that we may release new [minor and patch](https://semver.org/) versions of
-`@warrantdev/react-warrant-js` with small but backwards-incompatible fixes to the type
-declarations. These changes will not affect Warrant itself.
-
-## Warrant Documentation
-
-- [Warrant Docs](https://docs.warrant.dev/)
